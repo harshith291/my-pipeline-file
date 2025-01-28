@@ -1,0 +1,29 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches:
+      - main  # Trigger this pipeline when you push to the 'main' branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # This means it will run on an Ubuntu environment
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # This checks out your code from the GitHub repo
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'  # You can change the version of Java if needed
+
+      - name: Build project
+        run: ./gradlew build  # Replace this with your build command
+
+      - name: Run tests
+        run: ./gradlew test  # Replace this with your test command
+
+      - name: Deploy to Kubernetes
+        run: kubectl apply -f deployment.yaml  # Command to deploy to Kubernetes
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}  # Add secrets for Kubernetes connection
